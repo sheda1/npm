@@ -4,42 +4,32 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
+//const rootDir = require('../util/path.js');
+const path = require('path');
 const adminRoutes = require('./routes/admin.js');
 const shopRoutes = require('./routes/shop.js');
+
+const contactRoutes = require('./routes/contact.js')
+const successRoute = require('./routes/success.js');
+const exp = require('constants');
+
 app.use(bodyParser.urlencoded({extended : false}));
+app.use(express.static(path.join(__dirname,'public')));
 
-
-app.use('/admin',adminRoutes);
+app.use(adminRoutes);
 
 app.use(shopRoutes);
 
+app.use(contactRoutes);
+
+app.use(successRoute);
+
 app.use((req,res,next) => {
-    res.status(404).send('<h1>Page not found</h1>');
+    console.log('byee');
+    //res.status(404).send('<h1>Page not found</h1>');
+   res.status(404).sendFile(path.join(__dirname,'views','404.html'));
 });
+
 app.listen(3000);
 
-// admin.js
-const express = require('express');
-const router = express.Router();
 
-router.get('/add-product',(req,res,next) => {
-  
-    res.send('<form action="/admin/add-product" method="post"><input type = "text" name = "title" ><button type ="submit">Add product</button></form>')
-});
-
-router.post('/product',(req,res,next) => {
-    console.log(req.body);
-    res.redirect('/');
-});
-
-module.exports = router;
-
-//shop.js
-const express = require('express');
-const router = express.Router();
-
-router.use('/',(req,res,next) => {
-    
-    res.send('<h1>Hello from express</h1>')
-});
-module.exports = router;
